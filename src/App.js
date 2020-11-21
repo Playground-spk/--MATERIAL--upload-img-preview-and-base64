@@ -1,23 +1,47 @@
-import logo from './logo.svg';
-import './App.css';
+import logo from "./logo.svg";
+import "./App.css";
+import { useState } from "react";
 
 function App() {
+  const [base64Img, setBase64Img] = useState(null);
+  const [preview, setPreview] = useState(null);
+
+  const handleReaderLoaded = (rE) => {
+    let binaryString = rE.target.result;
+
+    setBase64Img(btoa(binaryString));
+  };
+
+  const onFileChnage = (e) => {
+    let file = e.target.files[0];
+
+    setPreview(URL.createObjectURL(file));
+
+    if (file) {
+      let reader = new FileReader();
+      reader.onload = handleReaderLoaded;
+      reader.readAsBinaryString(file);
+    }
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    alert("binary string : " + base64Img);
+  };
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <form action="" onSubmit={onSubmit}>
+        <input
+          type="file"
+          name=""
+          accept=".jpeg, .png, .jpg"
+          id=""
+          onChange={onFileChnage}
+        />
+        <button type="submit">submit</button>
+      </form>
+      <img src={preview} alt="" />
+      <img src={`data:image/jpg;base64,${base64Img}`} alt=""/>
     </div>
   );
 }
